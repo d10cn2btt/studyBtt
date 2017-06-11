@@ -1,7 +1,7 @@
 "use strict";
-var http = require('http');
-var fs = require('fs');
-var app = require('./app');
+let http = require('http');
+let fs = require('fs');
+let app = require('./app');
 const PORT = 6969;
 
 http.createServer(app.router).listen(PORT);

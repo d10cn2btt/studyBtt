@@ -1,0 +1,18 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "setup router",
+  "main": "router.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "router"
+  ],
+  "author": "truongbt",
+  "license": "ISC",
+  "dependencies": {
+    "node-static": "^0.7.9"
+  }
+}
