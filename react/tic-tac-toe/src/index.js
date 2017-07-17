@@ -13,44 +13,37 @@ class Game extends React.Component {
                 squares: Array(9).fill(null)
             }],
             xIsNext: true,
+            stepNumber: 0,
         }
     }
 
     handleClick(i) {
-        const history = this.state.history;
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
-        const tmpSquare = current.squares.slice();
-
-        if (calculateWinner(tmpSquare) || tmpSquare[i]) {
-            alert('win roi || khong dc an gian');
+        const squares = current.squares.slice();
+        if (calculateWinner(squares) || squares[i]) {
             return;
         }
-
-        tmpSquare[i] = this.getNextPlayer();
-
+        squares[i] = this.state.xIsNext ? "X" : "O";
         this.setState({
             history: history.concat([{
-                squares: tmpSquare
+                squares: squares
             }]),
-            xIsNext: !this.state.xIsNext,
-            stepNumber: 0,
+            stepNumber: history.length,
+            xIsNext: !this.state.xIsNext
         });
     }
 
-    getNextPlayer() {
-        return this.state.xIsNext ? 'X' : 'O';
-    }
-
-    jumpStep(step) {
+    jumpTo(step) {
         this.setState({
             stepNumber: step,
-            xIsNext: (step % 2) === 0,
+            xIsNext: (step % 2) === 0
         });
     }
 
     render() {
         const history = this.state.history;
-        const current = history[history.length - 1];
+        const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
         const moves = history.map((step, move) => {
@@ -58,12 +51,12 @@ class Game extends React.Component {
 
             return (
                 <li key={move}>
-                    <a href="#" onClick={() => this.jumpStep(move)}>{desc}</a>
+                    <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
                 </li>
             );
         });
 
-        let status = 'Next player: ' + (this.getNextPlayer());
+        let status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
         if (winner) {
             status = 'Winner: ' + winner;
@@ -86,6 +79,25 @@ class Game extends React.Component {
     }
 }
 
+// ========================================
+
+// step working reactDOM
+// 1. A JSX element renders.
+// 2. The entire virtual DOM updates.
+// 3. The virtual DOM "diffs," comparing its current self with its previous self.
+// 4. Part of the real DOM updates.
+// 5. The screen looks different than it used to.
+
+// <MyComponentClass /> will call its render method
+
+// don't use this wau - Can only update a mounted or mounting component
+// var game = new Game();
+
+ReactDOM.render(
+    <Game />,
+    document.getElementById('root')
+);
+
 function calculateWinner(squares) {
     const lines = [
         [0, 1, 2],
@@ -105,22 +117,3 @@ function calculateWinner(squares) {
     }
     return null;
 }
-
-// ========================================
-
-// step working reactDOM
-// 1. A JSX element renders.
-// 2. The entire virtual DOM updates.
-// 3. The virtual DOM "diffs," comparing its current self with its previous self.
-// 4. Part of the real DOM updates.
-// 5. The screen looks different than it used to.
-
-// <MyComponentClass /> will call its render method
-
-// don't use this wau - Can only update a mounted or mounting component
-// var game = new Game();
-
-ReactDOM.render(
-    <Game />,
-    document.getElementById('root')
-);
